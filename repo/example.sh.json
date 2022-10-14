@@ -1,0 +1,33 @@
+{
+	"human_name": "Example",
+	"description": "Simple program that does simple things.",
+	"category": "Example",
+	"inputs": {
+		"INPUT_A": {
+			"name": "Input A",
+			"data_format": {
+				"Json": {
+					"type": "number"
+				}
+			}
+		},
+		"INPUT_B": {
+			"name": "Input B",
+			"data_format": {
+				"Json": {
+					"type": "number"
+				}
+			}
+		}
+	},
+	"outputs": {
+		"SUM": {
+			"name": "Sum of A and B",
+			"data_format": {
+				"Json": {
+					"type": "number"
+				}
+			}
+		}
+	}
+}
