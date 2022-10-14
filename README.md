@@ -1,3 +1,3 @@
 # WPipe
 
-Willow's Powerful Interactive Pipeline Environment, a graphical IDE for creating shell pipelines.
+Willow's Powerful Interactive Pipeline Environment, a graphical IDE-ish-thing for creating shell pipelines.
