@@ -24,10 +24,12 @@ pub enum DataFormat {
 	/// The data is only a timing signal, and contains no extra information.
 	/// Programs can assume that "tick" inputs send only ASCII LF, and should send only ASCII LF on "tick" outputs.
 	Tick,
-	/// The data is a raw stream. It is guaranteed not to contain the associated character, except as a separator for WPipe.
-	Raw(char),
-	/// The data is JSON, matching the associated schema.
+	/// The data is JSON, matching the associated schema. This is checked only at runtime inside WPipe.
 	Json(Value),
+	/// The data is a constant number, and will only be sent once.
+	ConstNumber,
+	/// The data is a constant string, and will only be sent once.
+	ConstString,
 }
 
 pub trait CheckCompletion {

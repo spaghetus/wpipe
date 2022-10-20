@@ -1,0 +1,25 @@
+{
+	"human_name": "Head",
+	"description": "Gets the first COUNT lines of its input.",
+	"category": "Example",
+	"inputs": {
+		"INPUT": {
+			"name": "Input",
+			"data_format": {
+				"Json": {}
+			}
+		},
+		"COUNT": {
+			"name": "Count",
+			"data_format": "ConstNumber"
+		}
+	},
+	"outputs": {
+		"OUTPUT": {
+			"name": "The first COUNT lines of INPUT",
+			"data_format": {
+				"Json": {}
+			}
+		}
+	}
+}

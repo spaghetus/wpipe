@@ -1,15 +1,22 @@
 //! Implements an EGUI application for WPipe.
 
-use crate::repo::Repo;
-use eframe::App;
-use egui_notify::Toasts;
+use std::sync::Arc;
 
-pub struct WPipeState<R: Repo> {
+use crate::{node::AllNodeTemplates, repo::Repo};
+use eframe::App;
+use egui::{CollapsingHeader, Key};
+use egui_node_graph::NodeFinder;
+use egui_notify::Toasts;
+use epaint::{Pos2, Vec2};
+
+pub struct WPipeState<R: Repo + Clone> {
 	pub repo: R,
 	pub toasts: Toasts,
+	pub graph_state: crate::node::EditorState<R>,
+	pub user_state: crate::node::GraphState<R>,
 }
 
-impl<REPO: Repo> App for WPipeState<REPO> {
+impl<REPO: Repo + Clone> App for WPipeState<REPO> {
 	fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
 		egui::TopBottomPanel::top("menu").show(ctx, |ui| {
 			ui.horizontal(|ui| {
@@ -46,30 +53,56 @@ impl<REPO: Repo> App for WPipeState<REPO> {
 				ui.heading(program_info.human_name);
 				ui.label(format!("{} - {}", name, &checksum[..8]));
 				ui.label(program_info.description);
-				ui.collapsing("Takes:", |ui| {
-					let mut inputs: Vec<_> = program_info.inputs.iter().collect();
-					inputs.sort_by(|(a, _), (b, _)| a.cmp(b));
-					for (_name, interface) in inputs {
-						ui.label(interface.name.clone());
-						ui.code(serde_json::to_string_pretty(&interface.data_format).unwrap());
-					}
-				});
-				ui.collapsing("Puts:", |ui| {
-					let mut outputs: Vec<_> = program_info.outputs.iter().collect();
-					outputs.sort_by(|(a, _), (b, _)| a.cmp(b));
-					for (_name, interface) in outputs {
-						ui.label(interface.name.clone());
-						ui.code(serde_json::to_string_pretty(&interface.data_format).unwrap());
-					}
-				});
-				if ui.button("Add").clicked() {
-					self.toasts.info("Adding programs is unimplemented...");
-				}
+				CollapsingHeader::new("Takes:")
+					.id_source(checksum.clone() + "takes")
+					.show(ui, |ui| {
+						let mut inputs: Vec<_> = program_info.inputs.iter().collect();
+						inputs.sort_by(|(a, _), (b, _)| a.cmp(b));
+						for (_name, interface) in inputs {
+							ui.label(interface.name.clone());
+							ui.code(serde_json::to_string_pretty(&interface.data_format).unwrap());
+						}
+					});
+				CollapsingHeader::new("Puts:")
+					.id_source(checksum.clone() + "puts")
+					.show(ui, |ui| {
+						let mut outputs: Vec<_> = program_info.outputs.iter().collect();
+						outputs.sort_by(|(a, _), (b, _)| a.cmp(b));
+						for (_name, interface) in outputs {
+							ui.label(interface.name.clone());
+							ui.code(serde_json::to_string_pretty(&interface.data_format).unwrap());
+						}
+					});
 				ui.separator();
 			}
 		});
 		egui::CentralPanel::default().show(ctx, |ui| {
-			ui.label("TODO");
+			let all_kinds = AllNodeTemplates {
+				repo: Arc::new(self.repo.clone()),
+			};
+			let res = self
+				.graph_state
+				.draw_graph_editor(ui, all_kinds, &mut self.user_state);
+			if !res.node_responses.is_empty() {
+				// Save
+			}
+			if ctx.input_mut().consume_key(
+				egui::Modifiers {
+					alt: false,
+					ctrl: false,
+					shift: true,
+					mac_cmd: false,
+					command: false,
+				},
+				Key::A,
+			) {
+				self.graph_state.node_finder = Some(NodeFinder::new_at(
+					ctx.input()
+						.pointer
+						.interact_pos()
+						.unwrap_or(Pos2::new(0.0, 0.0)),
+				))
+			}
 		});
 		self.toasts.show(ctx);
 	}

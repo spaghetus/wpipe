@@ -4,8 +4,11 @@ use wpipe::fsrepo::DirectoryRepo;
 
 #[cfg(feature = "gui")]
 fn main() {
+	use std::sync::Arc;
+
 	use eframe::NativeOptions;
 	use egui_notify::Toasts;
+	use wpipe::node::GraphState;
 
 	let repo = DirectoryRepo {
 		path: PathBuf::from_str("./repo").unwrap(),
@@ -13,8 +16,13 @@ fn main() {
 	};
 
 	let app = wpipe::gui::WPipeState {
-		repo,
 		toasts: Toasts::default(),
+		graph_state: Default::default(),
+		user_state: GraphState {
+			active_node: None,
+			repo: Some(Arc::new(repo.clone())),
+		},
+		repo,
 	};
 
 	eframe::run_native(

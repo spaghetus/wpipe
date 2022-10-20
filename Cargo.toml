@@ -14,11 +14,13 @@ serde_json = "1"
 serde = {version = "1", features = ["derive"]}
 nix = {version = "0.25", features = ["fs"]}
 sha256 = "1"
+anyhow = "1.0.65"
 egui = {version = "0.19", optional = true}
 eframe = {version = "0.19", optional = true}
-egui_node_graph = {version = "0.3", optional = true}
+egui_node_graph = {git = "https://github.com/setzer22/egui_node_graph", optional = true, features = ["serde"]}
+epaint = {version = "0.19.0", optional = true}
 egui-notify = {version = "0.4", optional = true}
 
 [features]
 default = ["gui"]
-gui = ["egui", "eframe", "egui_node_graph", "egui-notify"]
+gui = ["egui", "eframe", "egui_node_graph", "egui-notify", "epaint"]

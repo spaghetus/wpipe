@@ -15,6 +15,7 @@ use std::{
 	sync::{Arc, Mutex},
 };
 
+#[derive(Clone)]
 pub struct DirectoryRepo {
 	pub path: PathBuf,
 	pub cache: Arc<Mutex<HashMap<String, (ProgramInfo, String)>>>,

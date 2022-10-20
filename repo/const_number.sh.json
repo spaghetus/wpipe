@@ -1,0 +1,21 @@
+{
+	"human_name": "Repeat Number",
+	"description": "Takes in a constant, and repeats it as a stream.",
+	"category": "Example",
+	"inputs": {
+		"INPUT": {
+			"name": "Input",
+			"data_format": "ConstNumber"
+		}
+	},
+	"outputs": {
+		"OUTPUT": {
+			"name": "Output",
+			"data_format": {
+				"Json": {
+					"type": "number"
+				}
+			}
+		}
+	}
+}
